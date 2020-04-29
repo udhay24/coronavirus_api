@@ -2,9 +2,10 @@ from flask import Flask
 from datetime import datetime
 import pandas as pd
 import json
+import os
 
 app = Flask(__name__)
-
+app.config.from_object(os.environ['APP_SETTINGS'])
 
 @app.route('/')
 def homepage():
@@ -35,3 +36,5 @@ def return_cases_timeline():
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=True)
+    print(os.environ['APP_SETTINGS'])
+
