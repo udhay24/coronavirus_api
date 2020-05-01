@@ -3,9 +3,15 @@ from datetime import datetime
 import pandas as pd
 import json
 import os
+from flask_sqlalchemy import SQLAlchemy
+
 
 app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+from models import Result
 
 @app.route('/')
 def homepage():
@@ -38,4 +44,3 @@ def return_cases_timeline():
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=True)
     print(os.environ['APP_SETTINGS'])
-
