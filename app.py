@@ -1,10 +1,16 @@
-from flask import Flask
+from flask import Flask, render_template, request
 from datetime import datetime
 import pandas as pd
 import json
 import os
 from flask_sqlalchemy import SQLAlchemy
-
+import requests
+from bs4 import BeautifulSoup
+import nltk
+import re
+from collections import Counter
+from stop_words import get_stop_words
+import operator
 
 app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
@@ -13,16 +19,49 @@ db = SQLAlchemy(app)
 
 from models import Result
 
-@app.route('/')
-def homepage():
-    the_time = datetime.now().strftime("%A, %d %b %Y %l:%M %p")
 
-    return """
-    <h1>Hello heroku</h1>
-    <p>It is currently {time}.</p>
-    <p>it is running on os {os}.</p>
-    <img src="http://loremflickr.com/600/400" />
-    """.format(time=the_time, os=os.environ['APP_SETTINGS'])
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    errors = []
+    results = {}
+    if request.method == 'POST':
+        try:
+            url = request.form['url']
+            r = requests.get(url)
+            print(r.text)
+        except:
+            errors.append(
+                "Unable to get URL. Please make sure it's valid and try again."
+            )
+        if r:
+            raw = BeautifulSoup(r.text, 'html.parser').get_text()
+            nltk.data.path.append('./nltk_data/')
+            tokens = nltk.word_tokenize(raw)
+            words = nltk.Text(tokens)
+            non_punc = re.compile('.*[A-Za-z]*.')
+            raw_words = [text for text in words if non_punc.match(text)]
+            raw_words_count = Counter(raw_words)
+            stop_words = get_stop_words('en')
+            no_stop_words = [w for w in raw_words if w.lower() not in stop_words]
+            no_stop_count = Counter(no_stop_words)
+            results = sorted(
+                no_stop_count.items(),
+                key=operator.itemgetter(1),
+                reverse=True
+            )
+            try:
+                result = Result(
+                    url=url,
+                    result_all=raw_words_count,
+                    result_no_stop_words=no_stop_count
+                )
+                db.session.add(result)
+                db.session.commit()
+            except:
+                errors.append("Unable to add item to database.")
+                return render_template('index.html', errors=errors, results=results)
+
+    return render_template('index.html')
 
 
 @app.route('/api/v1/data/timeline', methods=['GET'])
