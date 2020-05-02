@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="PostgreSQL - postgres@localhost" uuid="42961453-d6ab-4afe-866c-f5cd3c231054">
+    <data-source source="LOCAL" name="wordcount_dev@localhost" uuid="86e8f3ea-e11c-4c6d-a54e-1af84ea4537c">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://localhost:5432/postgres</jdbc-url>
-    </data-source>
-    <data-source source="LOCAL" name="PostgreSQL - postgres@localhost [2]" uuid="adce9353-f916-42bd-8835-08d4861fb626">
-      <driver-ref>postgresql</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://localhost:5432/coronavirus</jdbc-url>
+      <jdbc-url>jdbc:postgresql://localhost:5432/wordcount_dev</jdbc-url>
     </data-source>
   </component>
 </project>

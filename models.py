@@ -3,7 +3,7 @@ from sqlalchemy.dialects.postgresql import JSON
 
 
 class Result(db.Model):
-    __tablename__ = 'india_cases'
+    __tablename__ = 'results'
 
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String())
